@@ -8,9 +8,7 @@ Python 3.6
 
 ## วิธีรัน
 ```bash
-> cd weather
-> py weather.py weather.xml # weather.xml คือชื่อไฟล์ xml ที่ต้องการจะแปลง
-weather.json
+py weather.py weather.xml # weather.xml คือชื่อไฟล์ xml ที่ต้องการจะแปลง
 ```
 
 ## Xmljson
