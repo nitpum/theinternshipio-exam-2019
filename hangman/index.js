@@ -2,13 +2,22 @@ const fs        = require('fs')
 const path      = require('path')
 const readline  = require('readline')
 
-let scorre      = 0
+let score       = 0
 let catagory    = []
-let words       = []
+let wordList    = []
+let quizNum     = 0
+let maxQuiz     = 10
 let selectCat   = -1
-let state       = 0 // 0 = select catagory,
+let state       = 0 // 0 = select catagory, 1 = playing
+let remaining   = ""
+let guess       = {}
+let guessed     = {}
 
-function readCatagory(filename) {
+function changeState(toState) {
+  state = toState
+}
+
+function readCatagoryFile(filename) {
   return new Promise((resolve, reject) => {
     fs.readFile(
       path.join(__dirname, './catagory', filename),
@@ -16,7 +25,7 @@ function readCatagory(filename) {
       (err, data) => {
         if (err) reject(`Can\'t load ${filename} in catagory.`)
 
-        words.push(JSON.parse(data))
+        catagory.push(JSON.parse(data))
         resolve()
       }
     )
@@ -24,8 +33,82 @@ function readCatagory(filename) {
 }
 
 function randomWord(words) {
+  return new Promise((resolve, reject) => {
+    if (words.length == 0) reject(`No word to quess`)
+    let length = words.length
+    guess = words[Math.floor(Math.random() * length)]
+    guess.char = [...guess.word] // Convert to array easier for check char
+    console.log(`[${quizNum}/${maxQuiz}] *Hint: ${guess.hint}`)
+    resolve(guess)
+  })
+}
 
-  rl.question()
+function startNewGuess() {
+  quizNum++
+  clearGuessed(0)
+  randomWord(wordList).then(_ => askAnwser())
+}
+
+function askCatagory() {
+  console.log(`Select catagory`)
+  // Print catagory list
+  for (const [i, value] of catagory.entries()) {
+    console.log(`${i + 1}) ${value['name']} `)
+  }
+  rl.question('Select catagory: ', anwser => {
+    selectCat = anwser - 1
+    changeState(1) // Change to playing state
+    wordList = catagory[selectCat]['words']
+    console.log(`\n=> ${catagory[selectCat]['name']} <=`)
+    startNewGuess()
+  })
+}
+
+function askAnwser() {
+  remaining = [...guess.word.toLowerCase()].map(wordCensor).join('')
+  rl.question(`${remaining}\n> `, anwser => {
+    anwser = anwser.toLowerCase()
+    if ([...anwser].length > 1) {
+      console.log(`Please enter single character`)
+      return askAnwser()
+    }
+    if (!guess.char.includes(anwser)) {
+      guessed.wrong.push(anwser)
+    } else {
+      guessed.right.push(anwser)
+      if (guess.char.every(x => !x.toLowerCase().match(/[a-z]/) || guessed.right.includes(x))) {
+        console.log('Correct !\n')
+        if (quizNum === maxQuiz) {
+          // End game
+          changeState(0)
+          reset()
+          return askCatagory()
+        }
+        return startNewGuess()
+      }
+    }
+    return askAnwser()
+  })
+}
+
+function reset() {
+  quizNum = 0
+  clearGuessed()
+}
+
+function clearGuessed() {
+  guessed = {
+    right:        [],
+    wrong:        []
+  }
+}
+
+function isGuessed(char) {
+  return guessed.right.includes(char) || guessed.wrong.includes(char)
+}
+
+function wordCensor(char) {
+  return (guessed.right.includes(char) || guessed.wrong.includes(char) || !char.toLowerCase().match(/[a-z]/))? `${char} `: '_ '
 }
 
 const rl = readline.createInterface({
@@ -33,33 +116,12 @@ const rl = readline.createInterface({
   output: process.stdout
 })
 
-// rl.on('line', line => {
-//   if (state == 0) {
-//     selectCat = line - 1
-//     state = 1
-//     console.log(`${words[selectCat]['name']} `)
-//   } else if (state == 1) {
-
-//   }
-// })
-
+// Load all catagory files
 fs.readdir(path.join(__dirname, './catagory'), (err, items) => {
   if (err) throw new Error("Can't load catagory file!")
 
-  rl.pause()
   // Read all catagory files and let player select
-  Promise.all(items.map(readCatagory)).then(() => {
-    console.log(`Select catagory`)
-    for (const [i, value] of words.entries()) {
-      console.log(`${i + 1}) ${value['name']} `)
-    }
-    rl.resume()
-    rl.question('Select catagory: ', anwser => {
-      selectCat = anwser - 1
-      state = 1
-      console.log(`${words[selectCat]['name']} `)
-    })
+  Promise.all(items.map(readCatagoryFile)).then(() => {
+    askCatagory()
   })
 })
-
-// Event
