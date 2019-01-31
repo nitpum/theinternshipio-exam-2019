@@ -50,7 +50,7 @@ function randomWord(words) {
     do
     {
       index = Math.floor(Math.random() * length)
-    } while(!usedIndex.includes(index))
+    } while(usedIndex.includes(index))
     usedIndex.push(index)
     guess = words[index]
     guess.char = [...guess.word] // Convert to array easier for check char
