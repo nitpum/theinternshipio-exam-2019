@@ -8,6 +8,7 @@ let totalSkip   = 0
 let score       = 0
 let catagory    = []
 let wordList    = []
+let usedIndex   = []
 let quizNum     = 0
 let maxQuiz     = 5
 let maxWrong    = 0
@@ -41,7 +42,13 @@ function randomWord(words) {
   return new Promise((resolve, reject) => {
     if (words.length == 0) reject(`No word to quess`)
     let length = words.length
-    guess = words[Math.floor(Math.random() * length)]
+    let index = Math.floor(Math.random() * length)
+    do
+    {
+      index = Math.floor(Math.random() * length)
+    } while(!usedIndex.includes(index))
+    usedIndex.push(index)
+    guess = words[index]
     guess.char = [...guess.word] // Convert to array easier for check char
     maxWrong = parseInt(guess.word.length / 2)
     console.log(`[${quizNum}/${maxQuiz}] *Hint: ${guess.hint}`)
@@ -143,6 +150,7 @@ function reset() {
   totalSkip     = 0
   maxWrong      = 0  
   penaltyStack  = 0
+  usedIndex     = []
   clearGuessed()
 }
 
