@@ -54,6 +54,7 @@ function randomWord(words) {
     usedIndex.push(index)
     guess = words[index]
     guess.char = [...guess.word] // Convert to array easier for check char
+    guess.char = guess.char.map(x => x.toLowerCase())
     maxWrong = parseInt(guess.word.length / 2)
     console.log(`[${quizNum}/${maxQuiz}] *Hint: ${guess.hint}`)
     resolve(guess)
@@ -119,12 +120,12 @@ function askAnwser() {
       penaltyStack = Math.max(penaltyStack, -9)
       console.log(`Wrong ! Penalty: ${penaltyStack}`)
     } else if (!guessed.right.includes(anwser)) {
-      guessed.right.push(anwser)
+      guessed.right.push(anwser.toLowerCase())
       score += 10 + Math.max(penaltyStack, -9)
       totalScore += score
       console.log(`Score: +${score}`)
       // End
-      if (guess.char.every(x => !x.toLowerCase().match(/[a-z]/) || guessed.right.includes(x))) {
+      if (guess.char.every(x => !x.toLowerCase().match(/[a-z]/) || guessed.right.includes(x.toLowerCase()))) {
         let guessCount = guessed.wrong.length
         let msg = `" ${guess.word.toUpperCase()} " \t| wrong count: ${guessCount}, score: ${totalScore}`
         console.log(`${msg}\n`)
