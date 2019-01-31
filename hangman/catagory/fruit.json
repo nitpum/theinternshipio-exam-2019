@@ -3,7 +3,27 @@
   "words": [
     {
       "word": "apple",
-      "hint": "Logo of iPhone"
+      "hint": "Logo of Company that made iPhone"
+    },
+    {
+      "word": "orange",
+      "hint": "It's name same a color"
+    },
+    {
+      "word": "banana",
+      "hint": "Monkey like it!!"
+    },
+    {
+      "word": "pipeapple",
+      "hint": "It has an eye"
+    },
+    {
+      "word": "Coconut",
+      "hint": "Water ball"
+    },
+    {
+      "word": "Grape",
+      "hint": "Used to make wine"
     }
   ]
 }

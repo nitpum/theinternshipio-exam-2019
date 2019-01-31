@@ -1,0 +1,25 @@
+{
+  "name": "Software",
+  "words": [
+    {
+      "word": "Photoshop",
+      "hint": "Industry Standard Photo editing "
+    },
+    {
+      "word": "Adobe illustrator",
+      "hint": "Well call AI"
+    },
+    {
+      "word": "Visual Studio Code",
+      "hint": "Open source text editor from Microsoft"
+    },
+    {
+      "word": "Visual Studio",
+      "hint": "IDE from Microsoft"
+    },
+    {
+      "word": "Android Studio",
+      "hint": "Can make android app"
+    }
+  ]
+}

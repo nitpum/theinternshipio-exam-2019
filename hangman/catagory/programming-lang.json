@@ -1,0 +1,45 @@
+{
+  "name": "Programming Language",
+  "words": [
+    {
+      "word": "C#",
+      "hint": "Object Oriented Programming"
+    },
+    {
+      "word": "Python",
+      "hint": "Snake!!"
+    },
+    {
+      "word": "C++",
+      "hint": "Extended from C"
+    },
+    {
+      "word": "PHP",
+      "hint": "Most used in shared hosting"
+    },
+    {
+      "word": "Swift",
+      "hint": "It's fast!!!"
+    },
+    {
+      "word": "Java",
+      "hint": "Some coffe name"
+    },
+    {
+      "word": "R",
+      "hint": "Most used for statistic"
+    },
+    {
+      "word": "JavaScript",
+      "hint": "Can used in front-end and backend"
+    },
+    {
+      "word": "GO",
+      "hint": "_ _, Went, Gone"
+    },
+    {
+      "word": "Ruby",
+      "hint": "Red diamond"
+    }
+  ]
+}
