@@ -4,6 +4,7 @@ const readline  = require('readline')
 
 let totalScore  = 0
 let totalWrong  = 0
+let totalSkip   = 0
 let score       = 0
 let catagory    = []
 let wordList    = []
@@ -49,10 +50,18 @@ function randomWord(words) {
 }
 
 function startNewGuess() {
-  quizNum++
-  totalWrong += guessed.wrong.length
+  quizNum     += 1
+  totalWrong  += guessed.wrong.length
+  score        = 0
+  penaltyStack = 0
   clearGuessed()
   randomWord(wordList).then(_ => askAnwser())
+}
+
+function skip() {
+  console.log(`\n--- Skipped ---\n`)
+  totalSkip   += 1
+  startNewGuess()
 }
 
 function askCatagory() {
@@ -82,6 +91,9 @@ function askAnwser() {
       return askAnwser()
     }
     if (!guess.char.includes(anwser)) {
+      if (maxWrong - guessed.wrong.length < -10)
+        skip()
+
       guessed.wrong.push(anwser)
       let penalty = (guessed.wrong.length > maxWrong)? Math.max(maxWrong - guessed.wrong.length, -5): 0
       penaltyStack += penalty
@@ -103,12 +115,11 @@ function askAnwser() {
           console.log(`\n==========================================`)
           console.log(`\t> Total Score:\t ${totalScore}`)
           console.log(`\t> Total Wrong:\t ${totalWrong}`)
+          console.log(`\t> Total Skip:\t ${totalSkip}`)
           console.log(`==========================================\n`)
           return askCatagory()
         }
-        // New guess
-        score        = 0
-        penaltyStack = 0
+        // New guess        
         return startNewGuess()
       }
     }
@@ -120,6 +131,8 @@ function reset() {
   quizNum       = 0
   score         = 0
   totalScore    = 0
+  totalWrong    = 0
+  totalSkip     = 0
   maxWrong      = 0  
   penaltyStack  = 0
   clearGuessed()
