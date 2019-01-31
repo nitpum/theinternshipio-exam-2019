@@ -9,7 +9,7 @@ let score       = 0
 let catagory    = []
 let wordList    = []
 let quizNum     = 0
-let maxQuiz     = 10
+let maxQuiz     = 5
 let maxWrong    = 0
 let penaltyStack= 0
 let selectCat   = -1
@@ -64,14 +64,22 @@ function skip() {
   startNewGuess()
 }
 
-function askCatagory() {
+function showCatagoryAndAsk() {
   console.log(`Catagory list`)
   // Print catagory list
   for (const [i, value] of catagory.entries()) {
     console.log(`${i + 1}) ${value['name']} `)
   }
   reset()
-  rl.question('Select catagory: ', anwser => {
+  askCatagory()
+}
+
+function askCatagory() {
+  rl.question(`> ` , anwser => {
+    if (!anwser.match(/[0-9]/) || anwser.length < 1 || anwser > catagory.length || anwser < 1) {
+      console.log(`Please enter number of catagory`)
+      return askCatagory()
+    }
     selectCat = anwser - 1
     changeState(1) // Change to playing state
     wordList = catagory[selectCat]['words']
@@ -86,7 +94,7 @@ function askAnwser() {
   score = 0
   rl.question(`${remaining} \t wrong [${wrongCount}/${maxWrong}], score: ${totalScore} \n> `, anwser => {
     anwser = anwser.toLowerCase()
-    if ([...anwser].length > 1) {
+    if ([...anwser].length != 1) {
       console.log(`Please enter single character`)
       return askAnwser()
     }
@@ -117,7 +125,7 @@ function askAnwser() {
           console.log(`\t> Total Wrong:\t ${totalWrong}`)
           console.log(`\t> Total Skip:\t ${totalSkip}`)
           console.log(`==========================================\n`)
-          return askCatagory()
+          return showCatagoryAndAsk()
         }
         // New guess        
         return startNewGuess()
@@ -164,6 +172,6 @@ fs.readdir(path.join(__dirname, './catagory'), (err, items) => {
 
   // Read all catagory files and let player select
   Promise.all(items.map(readCatagoryFile)).then(() => {
-    askCatagory()
+    showCatagoryAndAsk()
   })
 })
