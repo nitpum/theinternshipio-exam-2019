@@ -30,8 +30,12 @@ function readCatagoryFile(filename) {
       'utf8',
       (err, data) => {
         if (err) reject(`Can\'t load ${filename} in catagory.`)
-
-        catagory.push(JSON.parse(data))
+        let d = JSON.parse(data)
+        if (d.words.length >= maxQuiz)
+          catagory.push(d)
+        else {
+          console.log(`File "${filename}" \t\t Not enough words. required at least 5`)
+        }
         resolve()
       }
     )
@@ -180,6 +184,10 @@ fs.readdir(path.join(__dirname, './catagory'), (err, items) => {
 
   // Read all catagory files and let player select
   Promise.all(items.map(readCatagoryFile)).then(() => {
+    if (catagory.length == 0) {
+      console.log(`Can't load any catagory files to play. Please check catagory files are valid`)
+      return
+    }
     showCatagoryAndAsk()
   })
 })
